@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Folder {
+  id       String  @id @default(uuid())
+  title    String
+  parentId String?
+
+  parent   Folder?   @relation("parent", fields: [parentId], references: [id])
+  children Folder[]  @relation("parent")
+  Content  Content[]
+
+  @@unique([parentId, title])
+}
+
+model Content {
+  id       String  @id @default(uuid())
+  title    String
+  entry    String?
+  parentId String?
+
+  parent   Folder?   @relation(fields: [parentId], references: [id])
+  sessions Session[]
+
+  @@unique([parentId, title])
+}
+
+model Session {
+  id            String @id @default(uuid())
+  ip            String
+  ua            String
+  contentId     String
+  broadcasterId String
+
+  broadcaster Broadcaster @relation(fields: [broadcasterId], references: [id])
+  content     Content     @relation(fields: [contentId], references: [id])
+}
+
+model Broadcaster {
+  id      String @id @default(uuid())
+  address String
+
+  Session Session[]
+}
