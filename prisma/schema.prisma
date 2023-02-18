@@ -17,37 +17,43 @@ model Folder {
 
   parent   Folder?   @relation("parent", fields: [parentId], references: [id])
   children Folder[]  @relation("parent")
-  Content  Content[]
+  contents Content[]
 
   @@unique([parentId, title])
 }
 
 model Content {
-  id       String  @id @default(uuid())
-  title    String
-  entry    String?
-  parentId String?
+  id        String   @id @default(uuid())
+  title     String
+  creation  DateTime @default(now())
+  thumbnail String?
+  entry     String?
+  parentId  String?
 
-  parent   Folder?   @relation(fields: [parentId], references: [id])
-  sessions Session[]
+  boradcasters Broadcaster[]
+  parent       Folder?       @relation(fields: [parentId], references: [id])
+  sessions     Session[]
 
   @@unique([parentId, title])
 }
 
 model Session {
-  id            String @id @default(uuid())
+  id            String  @id @default(uuid())
   ip            String
   ua            String
   contentId     String
-  broadcasterId String
+  broadcasterId String?
 
-  broadcaster Broadcaster @relation(fields: [broadcasterId], references: [id])
-  content     Content     @relation(fields: [contentId], references: [id])
+  broadcaster Broadcaster? @relation(fields: [broadcasterId], references: [id])
+  content     Content      @relation(fields: [contentId], references: [id])
 }
 
 model Broadcaster {
-  id      String @id @default(uuid())
-  address String
+  id        String  @id @default(uuid())
+  name      String
+  address   String
+  protected Boolean @default(true)
 
-  Session Session[]
+  contents Content[]
+  sessions Session[]
 }

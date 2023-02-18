@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Test</title>
+    </head>
+    <body>
+        <h1>Test</h1>
+        <!--file dropzone-->
+        <div>
+            <form
+                action="http://localhost:3000/api/content"
+                method="post"
+                enctype="multipart/form-data"
+            >
+                <input type="text" name="title" value="test" />
+                <input
+                    type="file"
+                    name="files"
+                    id="file"
+                    directory=""
+                    webkitdirectory=""
+                    mozdirectory=""
+                />
+                <input type="submit" name="submit" value="Upload" />
+            </form>
+        </div>
+    </body>
+</html>

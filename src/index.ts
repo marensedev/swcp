@@ -1,29 +1,19 @@
-import Koa from "koa"
-
-import json from "koa-json"
-import koaBody from "koa-body"
-
+import { randomUUID } from "crypto"
+import express from "express"
+import multer from "multer"
+import os from "os"
+import path from "path"
+import fs from "@supercharge/fs"
+import fixFilenameEncoding from "./utils/fixFilenameEncoding"
+import removeRootFolder from "./utils/removeRootFolder"
 import contentRouter from "./api/content"
-import folderRouter from "./api/folder"
-import viewerRouter from "./viewer"
 
-const app = new Koa()
+const app = express()
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
 
-// midlewares
-app.use(json())
-app.use(
-    koaBody({
-        formidable: { uploadDir: "./tmp" },
-        multipart: true,
-        urlencoded: true,
-    })
-)
+app.use(contentRouter)
 
-// api
-app.use(contentRouter.routes()).use(contentRouter.allowedMethods())
-app.use(folderRouter.routes()).use(folderRouter.allowedMethods())
-
-// viewer
-app.use(viewerRouter.routes()).use(viewerRouter.allowedMethods())
-
-app.listen(8000)
+app.listen(process.env.PORT || 3000, () => {
+    console.log("Server is running on port 3000")
+})
